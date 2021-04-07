@@ -1,5 +1,5 @@
 const configExpress = require('./config/configExpress');
-const config = require('config')
+const config = require('config') //serve para pegar as variaveis de ambiente definidas em config/default.json
 
 app = configExpress()
 
