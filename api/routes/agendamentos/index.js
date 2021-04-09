@@ -2,9 +2,9 @@ const router = require('express').Router()
 const TabelaAgendamento = require('../../agendamentos/TabelaAgendamento')
 const Agendamento = require('../../agendamentos/Agendamento')
 
-router.use('/agendamentos', async (req, resp) => {
+router.get('/agendamentos', async (req, resp) => {
     const results = await TabelaAgendamento.listar()
-    resp.send(JSON.stringify(results))
+    resp.send(JSON.stringify(results)) 
 });
 
 router.post('/agendamentos', async (req, resp) => {
@@ -26,6 +26,20 @@ router.get('/agendamentos/:idAgendamento', async (req, resp) => {
         }));
     }
 });
+
+router.put('/agendamentos/:idAgendamento', async (req, resp) => {
+    try {
+        const id = req.params.idAgendamento;
+        const status = req.body.status;
+        const agendamento = new Agendamento({id:id});
+        await agendamento.alterar(status);
+        resp.send(JSON.stringify(agendamento));
+    } catch (error){
+        resp.send(JSON.stringify({
+            message: error.message
+        }));
+    }
+})
 
 router.delete('/agendamentos/:idAgendamento', async (req, resp) => {
     try{
