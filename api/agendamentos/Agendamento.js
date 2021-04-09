@@ -37,6 +37,10 @@ class Agendamento {
     async remover(){
       await TabelaAgendamento.remover(this.id)
     }
+
+    async alterar(status){
+      await TabelaAgendamento.alterar(this.id, status)
+    }
 }
 
 module.exports = Agendamento;
