@@ -8,10 +8,15 @@ router.get('/agendamentos', async (req, resp) => {
 });
 
 router.post('/agendamentos', async (req, resp) => {
-    const reqAgendamento = req.body;
+    try{
+        const reqAgendamento = req.body;
     const agendamento = new Agendamento(reqAgendamento);
     await agendamento.criar()
     resp.send(JSON.stringify(agendamento));
+    } catch(error){
+        resp.send(error)
+    }
+    
 })
 
 router.get('/agendamentos/:idAgendamento', async (req, resp) => {
