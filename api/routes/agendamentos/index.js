@@ -1,10 +1,21 @@
 const router = require('express').Router()
 const TabelaAgendamento = require('../../agendamentos/TabelaAgendamento')
 const Agendamento = require('../../agendamentos/Agendamento')
+const SerializadorAgendamento = require('../../Serializar').SerializarAgendamento;
 
 router.get('/agendamentos', async (req, resp) => {
-    const results = await TabelaAgendamento.listar()
-    resp.send(JSON.stringify(results)) 
+    try{
+        const results = await TabelaAgendamento.listar()
+        const serializador = new SerializadorAgendamento(
+            resp.getHeader('Content-Type'),
+            ['nome_servico','status']
+        );
+        agendamentos = serializador.transformar(results)
+        resp.status(200).send(agendamentos);
+    } catch(error) {
+        resp.send(error)
+    }
+     
 });
 
 router.post('/agendamentos', async (req, resp) => {
