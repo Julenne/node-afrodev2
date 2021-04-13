@@ -2,7 +2,7 @@ const FormatoInvalido = require('./errors/FormatoInvalido');
 
 class Serializar{
   json(dados){
-    JSON.stringify(dados)
+    return JSON.stringify(dados)
   };
 
   transformar(dados) {
@@ -10,7 +10,9 @@ class Serializar{
       throw new FormatoInvalido(this.contentType)
     }
 
-    return this.json(dados);
+    return this.json(
+      this.filtrar(dados)
+    );
   }
 
   filtrarCampos(dados){
@@ -29,7 +31,7 @@ class Serializar{
 
     if(Array.isArray(dados)) {
       dadosFiltrados = dados.map((dado) => {
-        return this.filtrarCampos(dados);
+        return this.filtrarCampos(dado);
       });
     }
 
@@ -47,8 +49,21 @@ class SerializarAgendamento extends Serializar {
   }
 }
 
+class SerializarErro extends Serializar {
+  constructor(contentType, camposPersonalizados){
+    super();
+    this.contentType = contentType
+    this.camposPermitidos = [
+      'id','mensagem'
+    ].concat(camposPersonalizados || []);
+    this.tag = 'Error';
+    this.tagList = 'Erros'
+  }
+}
+
 module.exports = {
   Serializar: Serializar,
   SerializarAgendamento: SerializarAgendamento,
+  SerializarErro: SerializarErro,
   FormatosValidos: ['application/json'] 
 }

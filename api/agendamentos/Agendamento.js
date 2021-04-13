@@ -1,5 +1,6 @@
 const TabelaAgendamento = require('./TabelaAgendamento')
-
+const CampoInvalido = require('../errors/CampoInvalido')
+const DadosNaoInformados = require('../errors/DadosNaoInformados')
 class Agendamento {
   constructor({id, nome_cliente, nome_servico, status, data_agendamento, 
     data_criacao, data_atualizacao}){
@@ -38,8 +39,32 @@ class Agendamento {
       await TabelaAgendamento.remover(this.id)
     }
 
-    async alterar(status){
-      await TabelaAgendamento.alterar(this.id, status)
+    async atualizar() {
+      await TabelaAgendamento.buscarPorPK(this.id);
+      const camposAtualizaveis = ['nome_cliente', 'nome_servico', 'status', 'data_agendamento']
+      const dadosAtualizar = {}
+      if(Object.keys(dadosAtualizar).length == 0){
+        throw new DadosNaoInformados()
+      } else {
+        camposAtualizaveis.forEach((campo) => {
+          const valor = this[campo];
+          if(typeof valor === 'string' && valor.length > 0) {
+              dadosAtualizar[campo] = valor
+          }
+        });
+
+        await TabelaAgendamento.atualizar(this.id, dadosAtualizar);
+      }
+      
+  }
+    validar(){
+      const camposObrigatorios = ['nome_cliente', 'nome_servico', 'status', 'data_agendamento']
+      camposObrigatorios.forEach((campo) => {
+        const valor = this[campo];
+        if(typeof valor !== 'string' || valor.length === 0){
+          throw new CampoInvalido(campo)
+        }
+      });
     }
 }
 

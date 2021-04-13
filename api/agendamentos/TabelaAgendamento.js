@@ -43,15 +43,16 @@ module.exports = {
     }
   },
 
-  async alterar(id, status) {
-    try{
-      return await modeloAgendamento.update({status: status},
-        { where: {id:id}
-        });
-    } catch(error){
-      throw error
+  async atualizar(id, dados) {
+    try {
+        return await modeloAgendamento.update(dados, 
+            {
+                where: {
+                    id:id
+                }
+            })
+    } catch (error) {
+        throw error
     }
-    
-  
   }
 }

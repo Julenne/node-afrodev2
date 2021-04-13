@@ -3,7 +3,7 @@ const TabelaAgendamento = require('../../agendamentos/TabelaAgendamento')
 const Agendamento = require('../../agendamentos/Agendamento')
 const SerializadorAgendamento = require('../../Serializar').SerializarAgendamento;
 
-router.get('/agendamentos', async (req, resp) => {
+router.get('/agendamentos', async (req, resp, next) => {
     try{
         const results = await TabelaAgendamento.listar()
         const serializador = new SerializadorAgendamento(
@@ -13,51 +13,47 @@ router.get('/agendamentos', async (req, resp) => {
         agendamentos = serializador.transformar(results)
         resp.status(200).send(agendamentos);
     } catch(error) {
-        resp.send(error)
-    }
-     
+        next(error)
+    }   
 });
 
-router.post('/agendamentos', async (req, resp) => {
+router.post('/agendamentos', async (req, resp, next) => {
     try{
         const reqAgendamento = req.body;
-    const agendamento = new Agendamento(reqAgendamento);
-    await agendamento.criar()
-    resp.send(JSON.stringify(agendamento));
+        const agendamento = new Agendamento(reqAgendamento);
+        await agendamento.criar()
+        resp.send(JSON.stringify(agendamento));
     } catch(error){
-        resp.send(error)
+        next(error)
     }
     
 })
 
-router.get('/agendamentos/:idAgendamento', async (req, resp) => {
+router.get('/agendamentos/:idAgendamento', async (req, resp, next) => {
     try {
         const id = req.params.idAgendamento;
         const agendamento = new Agendamento({id:id});
         await agendamento.buscar();
         resp.send(JSON.stringify(agendamento));
     } catch(error){
-        resp.send(JSON.stringify({
-            message: error.message
-        }));
+        next(error)
     }
 });
 
-router.put('/agendamentos/:idAgendamento', async (req, resp) => {
+router.put('/agendamentos/:idAgendamento', async (req, resp, next) => {
     try {
         const id = req.params.idAgendamento;
-        const status = req.body.status;
-        const agendamento = new Agendamento({id:id});
-        await agendamento.alterar(status);
-        resp.send(JSON.stringify(agendamento));
+        const dadosBody = req.body;
+        const dados = Object.assign({}, dadosBody, {id:id})
+        const agendamento = new Agendamento(dados);
+        await agendamento.atualizar();
+        resp.send();
     } catch (error){
-        resp.send(JSON.stringify({
-            message: error.message
-        }));
+        next(error)
     }
 })
 
-router.delete('/agendamentos/:idAgendamento', async (req, resp) => {
+router.delete('/agendamentos/:idAgendamento', async (req, resp, next) => {
     try{
         const id = req.params.idAgendamento;
         const agendamento = new Agendamento({id:id});
@@ -65,9 +61,7 @@ router.delete('/agendamentos/:idAgendamento', async (req, resp) => {
         resp.status(204).send(JSON.stringify({
             mensagem: 'Registro removido'}))
     } catch(error){
-        resp.send(JSON.stringify({
-            message: error.message
-        }))
+        next(error)
     }
 });
 
