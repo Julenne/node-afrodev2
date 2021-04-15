@@ -27,7 +27,7 @@ module.exports = () => {
 
   app.use(express.json())
   app.use('/api', routesAgendamentos) // descrição da rota
-  app.use('/api', routesLogin)
+  //app.use('/api', routesLogin)
   app.use('/api', routesUsuario)
 
   app.use((error,req,resp,next) => {
