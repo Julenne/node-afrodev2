@@ -8,6 +8,7 @@ const NaoEncontrado = require('../errors/NaoEncontrado');
 const CampoInvalido = require('../errors/CampoInvalido');
 const SerializarError = require('../Serializar').SerializarErro
 const DadosNaoInformados = require('../errors/DadosNaoInformados')
+const passport = require('../usuarios/autenticacao');
 module.exports = () => {
   const app = express();
 
@@ -27,7 +28,7 @@ module.exports = () => {
 
   app.use(express.json())
   app.use('/api', routesAgendamentos) // descrição da rota
-  //app.use('/api', routesLogin)
+  app.use('/api', routesLogin)
   app.use('/api', routesUsuario)
 
   app.use((error,req,resp,next) => {
