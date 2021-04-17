@@ -1,9 +1,9 @@
-const TabelaUsuario = require('./TabelaUsuario');
-const CampoInvalido = require('../errors/CampoInvalido')
-const CampoQtdMinima = require('../errors/CampoQtdMinima')
-const CampoQtdMaxima = require('../errors/CampoQtdMaxima')
-const NaoEncontrado = require('../errors/NaoEncontrado')
-const DadosNaoInformados = require('../errors/DadosNaoInformados')
+const TabelaUsuario = require('../../models/usuarios/TabelaUsuario');
+const CampoInvalido = require('../../errors/CampoInvalido')
+const CampoQtdMinima = require('../../errors/CampoQtdMinima')
+const CampoQtdMaxima = require('../../errors/CampoQtdMaxima')
+const NaoEncontrado = require('../../errors/NaoEncontrado')
+const DadosNaoInformados = require('../../errors/DadosNaoInformados')
 const bcrypt = require('bcrypt')
 
 class Usuario {
@@ -14,6 +14,7 @@ class Usuario {
     this.senha = senha;
     this.data_criacao = data_criacao;
     this.data_atualizacao = data_atualizacao;
+    this.senhaHash = '';
   };
 
   async criar(){
